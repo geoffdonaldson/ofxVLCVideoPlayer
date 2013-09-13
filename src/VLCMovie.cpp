@@ -1,7 +1,7 @@
 #define _WIN32_WINNT 0x0500
 #include "VLCMovie.h"
 #include <lib/media_internal.h>
-#include <vlc/plugins/vlc_input_item.h>
+#include <vlc_input_item.h>
 
 //VLCMovie::VLCMovie(string filename) : filename(filename), frontImage(&image[1]), backImage(&image[0]), isFliped(true), isLooping(true), movieFinished(false), soundBuffer(2048 * 320), isInitialized(false) {
 VLCMovie::VLCMovie(string filename) : filename(filename), frontImage(&image[1]), backImage(&image[0]), isFliped(true), isLooping(true), movieFinished(false), isInitialized(false), isVLCInitialized(false), isThumbnailOK(false), frontTexture(NULL) {
@@ -58,22 +58,28 @@ void VLCMovie::initializeVLC() {
     videoHeight = 0;
   //  libvlc_video_set_callbacks(mp, NULL, NULL, NULL, this);
   //  libvlc_audio_set_callbacks(mp, NULL, NULL, NULL, NULL, NULL, this);
-  //  libvlc_media_player_play(mp);
+  
+    libvlc_media_player_play(mp);
 
-  //  while (videoWidth == 0 && videoHeight == 0) {
-  //      if (!libvlc_media_player_will_play(mp))
-  //          return;
-  //      Sleep(100);
-  //      videoWidth = libvlc_video_get_width(mp);
-  //      videoHeight = libvlc_video_get_height(mp);
-		//video_length_ms = libvlc_media_player_get_length(mp);
-  //  }
-  //  libvlc_media_player_stop(mp);
-  //  libvlc_media_player_set_position(mp, 0);
+    while (videoWidth == 0 && videoHeight == 0) {
+        if (!libvlc_media_player_will_play(mp))
+            return;
+        usleep(100);
+        
+        libvlc_video_get_size(mp, 0, &videoWidth, &videoHeight);
+
+		video_length_ms = libvlc_media_player_get_length(mp);
+    }
+    libvlc_media_player_stop(mp);
+    libvlc_media_player_set_position(mp, 0);
 
     libvlc_media_parse(m);
-    videoWidth = libvlc_video_get_width(mp);
-    videoHeight = libvlc_video_get_height(mp);
+ 
+    //libvlc_video_get_size(mp, 0, &videoWidth, &videoHeight);
+    
+    //videoWidth = libvlc_video_get_width(mp);
+    //videoHeight = libvlc_video_get_height(mp);
+    
     video_length_ms = libvlc_media_get_duration(m);
     cout << video_length_ms << endl;
 
@@ -86,7 +92,7 @@ void VLCMovie::initializeVLC() {
 
     libvlc_media_player_play(mp);
 	while (!isThumbnailOK) {
-        Sleep(100);
+        usleep(100);
     }
     libvlc_media_player_stop(mp);
     libvlc_media_player_set_position(mp, 0);

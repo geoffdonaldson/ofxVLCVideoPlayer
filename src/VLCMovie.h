@@ -24,7 +24,7 @@ class VLCMovie
     bool isInitialized;
     bool isVLCInitialized;
 
-    int videoWidth, videoHeight;
+    unsigned int videoWidth, videoHeight;
     float fps;
 	libvlc_time_t video_length_ms;
 	bool isThumbnailOK;

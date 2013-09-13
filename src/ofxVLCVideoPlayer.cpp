@@ -12,6 +12,17 @@ ofxVLCVideoPlayer::~ofxVLCVideoPlayer(void)
     //closeMovie();
 }
 
+bool ofxVLCVideoPlayer::loadMovieURL(string name) {
+    closeMovie();
+    vlcMovieInstance = shared_ptr<VLCMovie>(new VLCMovie(name));
+    vlcMovieInstance->init();
+    bool result = vlcMovieInstance->getIsInitialized();
+    if (!result) vlcMovieInstance.reset();
+    
+    return result;
+}
+
+
 bool ofxVLCVideoPlayer::loadMovie(string name) {
     closeMovie();
     vlcMovieInstance = shared_ptr<VLCMovie>(new VLCMovie(ofToDataPath(name)));

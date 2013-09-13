@@ -11,6 +11,7 @@ class ofxVLCVideoPlayer
 public:
     ofxVLCVideoPlayer(void);
     ~ofxVLCVideoPlayer(void);
+    bool loadMovieURL(string name);
     bool loadMovie(string name);
     void closeMovie();
     void update();
