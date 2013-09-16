@@ -3,40 +3,62 @@
 #include <memory>
 #include "VLCMovie.h"
 
-class ofxVLCVideoPlayer
+class ofxVLCVideoPlayer: public ofBaseVideoPlayer
 {
     std::tr1::shared_ptr<VLCMovie> vlcMovieInstance;
     ofTexture dummyTexture;
 	ofImage dummyImage;
 public:
-    ofxVLCVideoPlayer(void);
-    ~ofxVLCVideoPlayer(void);
+    
+    ofxVLCVideoPlayer();
+    ~ofxVLCVideoPlayer();
+    
     bool loadMovieURL(string name);
     bool loadMovie(string name);
-    void closeMovie();
+    void close();
     void update();
-    ofTexture &getTextureReference();
-	ofImage &getThumbnailImage();
-    void draw(float x, float y, float w, float h);
-    void draw(float x, float y);
+    
     void play();
     void pause();
     void stop();
-    bool getIsMovieDone();
-    void setPosition(float pct);
-    void setLoop(bool loop);
-    float getHeight();
+    
+    bool isFrameNew();
+    unsigned char * getPixels(){return NULL;}
+    ofPixelsRef	getPixelsRef(){ofPixels p; return p;}
+
+    ofTexture *	getTexture(){return NULL;}
+    
+    ofTexture &getTextureReference();
+	ofImage &getThumbnailImage();
+    
     float getWidth();
+    float getHeight();
+
+    bool isPaused(){return false;}
+    bool isLoaded();
     bool isPlaying();
-	bool isLoaded();
-	float getPosition();
-	int getTimeMillis();
-	void setTimeMillis(int ms);
+
+    bool setPixelFormat(ofPixelFormat pixelFormat){return false;}
+    ofPixelFormat getPixelFormat(){return OF_PIXELS_RGB;}
+    
+    void draw(float x, float y, float w, float h);
+    void draw(float x, float y);
+
+    bool getIsMovieDone();
     float getFPS();
     float getDuration();
+    int getTotalNumFrames();
+    void setLoop(bool loop);
+
+    float getPosition();
+    void setPosition(float pct);
+    
+	int getTimeMillis();
+	void setTimeMillis(int ms);
+
     void setFrame(int frame);
     int getCurrentFrame();
-    int getTotalNumFrames();
+    
     void setVolume(int volume);
     void toggleMute();
 };

@@ -2,18 +2,18 @@
 
 using std::tr1::shared_ptr;
 
-ofxVLCVideoPlayer::ofxVLCVideoPlayer(void)
+ofxVLCVideoPlayer::ofxVLCVideoPlayer()
 {
 }
 
 
-ofxVLCVideoPlayer::~ofxVLCVideoPlayer(void)
+ofxVLCVideoPlayer::~ofxVLCVideoPlayer()
 {
-    //closeMovie();
+    close();
 }
 
 bool ofxVLCVideoPlayer::loadMovieURL(string name) {
-    closeMovie();
+    close();
     vlcMovieInstance = shared_ptr<VLCMovie>(new VLCMovie(name));
     vlcMovieInstance->init();
     bool result = vlcMovieInstance->getIsInitialized();
@@ -24,7 +24,7 @@ bool ofxVLCVideoPlayer::loadMovieURL(string name) {
 
 
 bool ofxVLCVideoPlayer::loadMovie(string name) {
-    closeMovie();
+    close();
     vlcMovieInstance = shared_ptr<VLCMovie>(new VLCMovie(ofToDataPath(name)));
     vlcMovieInstance->init();
     bool result = vlcMovieInstance->getIsInitialized();
@@ -33,7 +33,7 @@ bool ofxVLCVideoPlayer::loadMovie(string name) {
     return result;
 }
 
-void ofxVLCVideoPlayer::closeMovie() {
+void ofxVLCVideoPlayer::close() {
     if (vlcMovieInstance) {
         vlcMovieInstance->stop();
         vlcMovieInstance.reset();
@@ -44,7 +44,17 @@ void ofxVLCVideoPlayer::update() {
     if (vlcMovieInstance) {
         vlcMovieInstance->updateTexture();
     }
-} 
+}
+
+bool ofxVLCVideoPlayer::isFrameNew() {
+    
+    bool ready = false;
+    if (vlcMovieInstance) {
+        ready = vlcMovieInstance->isFrameNew();
+    }
+    return ready;
+}
+
 
 ofTexture &ofxVLCVideoPlayer::getTextureReference() {
     if (vlcMovieInstance) {

@@ -28,6 +28,7 @@ class VLCMovie
     float fps;
 	libvlc_time_t video_length_ms;
 	bool isThumbnailOK;
+    bool isFrameReady;
     bool isFliped;
     bool isLooping;
 
@@ -103,6 +104,7 @@ public:
     void setVolume(int volume);
     void toggleMute();
 
+    bool isFrameNew();
     //ofSoundStream soundStream;
     //SoundBuffer soundBuffer;
     //virtual void audioOut(float *output, int bufferSize, int channels);
