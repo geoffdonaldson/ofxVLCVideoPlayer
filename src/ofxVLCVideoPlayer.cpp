@@ -12,10 +12,10 @@ ofxVLCVideoPlayer::~ofxVLCVideoPlayer()
     close();
 }
 
-bool ofxVLCVideoPlayer::loadMovieURL(string name) {
+bool ofxVLCVideoPlayer::loadMovieURL(string name, bool isMaster) {
     close();
     vlcMovieInstance = shared_ptr<VLCMovie>(new VLCMovie(name));
-    vlcMovieInstance->init();
+    vlcMovieInstance->init(isMaster);
     bool result = vlcMovieInstance->getIsInitialized();
     if (!result) vlcMovieInstance.reset();
     
@@ -26,7 +26,7 @@ bool ofxVLCVideoPlayer::loadMovieURL(string name) {
 bool ofxVLCVideoPlayer::loadMovie(string name) {
     close();
     vlcMovieInstance = shared_ptr<VLCMovie>(new VLCMovie(ofToDataPath(name)));
-    vlcMovieInstance->init();
+    vlcMovieInstance->init(false);
     bool result = vlcMovieInstance->getIsInitialized();
     if (!result) vlcMovieInstance.reset();
 
@@ -225,4 +225,8 @@ void ofxVLCVideoPlayer::toggleMute() {
     if (vlcMovieInstance) {
         vlcMovieInstance->toggleMute();
     }
+}
+
+void ofxVLCVideoPlayer::setJitter(int64_t jitter) {
+    vlcMovieInstance->setJitter(jitter);
 }

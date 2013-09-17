@@ -2,6 +2,7 @@
 #include "VLCMovie.h"
 #include <lib/media_internal.h>
 #include <vlc_input_item.h>
+#include <lib/libvlc_internal.h>
 
 //VLCMovie::VLCMovie(string filename) : filename(filename), frontImage(&image[1]), backImage(&image[0]), isFliped(true), isLooping(true), movieFinished(false), soundBuffer(2048 * 320), isInitialized(false) {
 VLCMovie::VLCMovie(string filename) : filename(filename), frontImage(&image[1]), backImage(&image[0]), isFliped(true), isLooping(true), movieFinished(false), isInitialized(false), isVLCInitialized(false), isThumbnailOK(false), frontTexture(NULL) {
@@ -14,10 +15,10 @@ VLCMovie::~VLCMovie(void)
 	cleanupVLC();
 }
 
-void VLCMovie::init() {
+void VLCMovie::init(bool isMaster) {
     if (isInitialized) return;
 
-    initializeVLC();
+    initializeVLC(isMaster);
     if (!isVLCInitialized) return;
 
     for (int i = 0; i < 2; i++) {
@@ -28,13 +29,33 @@ void VLCMovie::init() {
     isInitialized = true;
 }
 
-void VLCMovie::initializeVLC() {
-    char const *vlc_argv[] = {
-        "--no-osd"
-    };
+void VLCMovie::initializeVLC(bool isMaster) {
+    if (isMaster) {
+        char const *vlc_argv[] = {
+            "--no-osd",
+            "--http-reconnect",
+            "--network-synchronisation",
+            "--network-caching=100",
+            "--control=netsync",
+            "--netsync-master"
+        };
+        int vlc_argc = sizeof(vlc_argv) / sizeof(*vlc_argv);
+        libvlc = libvlc_new(vlc_argc, vlc_argv);
+    }
+    else {
+        char const *vlc_argv[] = {
+            "--no-osd",
+            "--http-reconnect",
+            "--network-synchronisation",
+            "--network-caching=100",
+            "--control=netsync",
+            "--netsync-master-ip=localhost"
+        };
+        int vlc_argc = sizeof(vlc_argv) / sizeof(*vlc_argv);
+        libvlc = libvlc_new(vlc_argc, vlc_argv);
+    }
 
-    int vlc_argc = sizeof(vlc_argv) / sizeof(*vlc_argv);
-    libvlc = libvlc_new(vlc_argc, vlc_argv);
+    
     //libvlc = libvlc_new(0, NULL);
     if (!libvlc) {
         const char *error = libvlc_errmsg();
@@ -355,4 +376,8 @@ void VLCMovie::setVolume(int volume) {
 
 void VLCMovie::toggleMute() {
     libvlc_audio_toggle_mute(mp);
+}
+
+void VLCMovie::setJitter(int64_t jitter) {
+    var_SetInteger(libvlc->p_libvlc_int, "network-buffer", jitter);
 }

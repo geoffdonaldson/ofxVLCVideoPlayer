@@ -8,12 +8,13 @@ class ofxVLCVideoPlayer: public ofBaseVideoPlayer
     std::tr1::shared_ptr<VLCMovie> vlcMovieInstance;
     ofTexture dummyTexture;
 	ofImage dummyImage;
+    bool master;
 public:
     
     ofxVLCVideoPlayer();
     ~ofxVLCVideoPlayer();
     
-    bool loadMovieURL(string name);
+    bool loadMovieURL(string name, bool isMaster);
     bool loadMovie(string name);
     void close();
     void update();
@@ -25,6 +26,8 @@ public:
     bool isFrameNew();
     unsigned char * getPixels(){return NULL;}
     ofPixelsRef	getPixelsRef(){ofPixels p; return p;}
+    
+    void setJitter(int64_t);
 
     ofTexture *	getTexture(){return NULL;}
     

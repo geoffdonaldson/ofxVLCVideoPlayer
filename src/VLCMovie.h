@@ -17,8 +17,8 @@ class VLCMovie
     libvlc_media_t *m;
     libvlc_media_player_t *mp;
     libvlc_event_manager_t *eventManager;
-
-    void initializeVLC();
+    
+    void initializeVLC(bool);
     void cleanupVLC();
 
     bool isInitialized;
@@ -78,7 +78,7 @@ class VLCMovie
 public:
     VLCMovie(string filename);
     ~VLCMovie(void);
-    void init();
+    void init(bool);
     void play();
     void rewind();
     void pause();
@@ -103,6 +103,8 @@ public:
     int getCurrentFrame();
     void setVolume(int volume);
     void toggleMute();
+    
+    void setJitter(int64_t jitter);
 
     bool isFrameNew();
     //ofSoundStream soundStream;
