@@ -34,8 +34,8 @@ void VLCMovie::initializeVLC(bool isMaster) {
         char const *vlc_argv[] = {
             "--no-osd",
             "--http-reconnect",
+            "--network-caching=300",
             "--network-synchronisation",
-            "--network-caching=100",
             "--control=netsync",
             "--netsync-master"
         };
@@ -46,8 +46,8 @@ void VLCMovie::initializeVLC(bool isMaster) {
         char const *vlc_argv[] = {
             "--no-osd",
             "--http-reconnect",
+            "--network-caching=200",
             "--network-synchronisation",
-            "--network-caching=100",
             "--control=netsync",
             "--netsync-master-ip=localhost"
         };
@@ -380,4 +380,6 @@ void VLCMovie::toggleMute() {
 
 void VLCMovie::setJitter(int64_t jitter) {
     var_SetInteger(libvlc->p_libvlc_int, "network-buffer", jitter);
+    
+    cout << "New jitter: " << var_GetInteger(libvlc->p_libvlc_int, "network-buffer") << endl;
 }
